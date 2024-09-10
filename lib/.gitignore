@@ -1,0 +1,31 @@
+# Flutter/Dart related
+*.dart_tool/
+*.flutter-plugins
+*.flutter-plugins-deps
+*.packages
+.pub/
+build/
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Android Studio
+.idea/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Log files
+*.log
+
+# Dependency directories
+node_modules/
+
+# Misc
+*.swp
+*.swo
+*.swn
