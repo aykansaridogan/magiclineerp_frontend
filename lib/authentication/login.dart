@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> login() async {
     final response = await http.post(
-      Uri.parse('http://localhost:3000/login'),
+      Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

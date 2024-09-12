@@ -26,7 +26,8 @@ class _ProjectsState extends State<Projects> {
   // Fetch projects from the backend
   Future<void> _fetchProjects() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/projects'));
+      final response = await http.get(Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/projects'));
+
       if (response.statusCode == 200) {
         final List<dynamic> projectList = json.decode(response.body);
         setState(() {
@@ -41,58 +42,58 @@ class _ProjectsState extends State<Projects> {
   }
 
   // Build the progress item with tasks
-Widget _buildProgressItem(Project project) {
-  return Card(
-    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-    child: ListTile(
-      leading: Icon(Icons.description, color: Colors.purple),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(project.name),
-          SizedBox(height: 5),
-          Text(
-            'Owner: ${project.ownerName}',
-            style: TextStyle(color: Colors.grey[600]),
-          ),
-          SizedBox(height: 10),
-          // Display tasks
-          ...project.tasks.map((task) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 5.0),
-              child: Text(
-                '• ${task.name}',
-                style: TextStyle(fontSize: 16, color: Colors.black87),
-              ),
+  Widget _buildProgressItem(Project project) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      child: ListTile(
+        leading: Icon(Icons.description, color: Colors.purple),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(project.name),
+            SizedBox(height: 5),
+            Text(
+              'Owner: ${project.ownerName}',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            SizedBox(height: 10),
+            // Display tasks
+            ...project.tasks.map((task) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: Text(
+                  '• ${task.name}',
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              );
+            }).toList(),
+          ],
+        ),
+        subtitle: Text(timeago.format(project.createdAt)),
+        trailing: PopupMenuButton<String>(
+          onSelected: (String result) {
+            if (result == 'Complete') {
+              // Mark as complete logic (if needed)
+            } else if (result == 'Delete') {
+              _deleteProject(project.id);
+            } else if (result == 'Edit') {
+              _showEditProjectDialog(project);
+            }
+          },
+          itemBuilder: (BuildContext context) => <String>[
+            'Edit',
+            'Delete',
+          ].map((String choice) {
+            return PopupMenuItem<String>(
+              value: choice,
+              child: Text(choice),
             );
           }).toList(),
-        ],
+        ),
       ),
-      subtitle: Text(timeago.format(project.createdAt)),
-      trailing: PopupMenuButton<String>(
-        onSelected: (String result) {
-          if (result == 'Complete') {
-            // Mark as complete logic (if needed)
-          } else if (result == 'Delete') {
-            _deleteProject(project.id);
-          } else if (result == 'Edit') {
-            _showEditProjectDialog(project);
-          }
-        },
-        itemBuilder: (BuildContext context) => <String>[
-          
-          'Delete',
-          'Edit',
-        ].map((String choice) {
-          return PopupMenuItem<String>(
-            value: choice,
-            child: Text(choice),
-          );
-        }).toList(),
-      ),
-    ),
-  );
-}
+    );
+  }
+
   // Show add project dialog
   void _showAddProjectDialog() {
     final _titleController = TextEditingController();
@@ -234,42 +235,41 @@ Widget _buildProgressItem(Project project) {
   }
 
   // Create a new project
-Future<void> _createProject(Project project) async {
-  try {
-    final response = await http.post(
-      Uri.parse('http://localhost:3000/projects'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'name': project.name,
-        'progress': project.progress,
-        'ownerName': project.ownerName,
-        'tasks': project.tasks.map((task) => {'name': task.name}).toList(),
-        'createdAt': project.createdAt.toIso8601String(),
-      }),
-    );
+  Future<void> _createProject(Project project) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/projects'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'name': project.name,
+          'progress': project.progress,
+          'ownerName': project.ownerName,
+          'tasks': project.tasks.map((task) => {'name': task.name}).toList(),
+          'createdAt': project.createdAt.toIso8601String(),
+        }),
+      );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-    if (response.statusCode == 201) {  // Assuming 201 is the success status code
-      final newProject = Project.fromJson(json.decode(response.body));
-      setState(() {
-        projects.add(newProject);
-      });
-    } else {
-      throw Exception('Failed to create project: ${response.body}');
+      if (response.statusCode == 201) {  // Assuming 201 is the success status code
+        final newProject = Project.fromJson(json.decode(response.body));
+        setState(() {
+          projects.add(newProject);
+        });
+      } else {
+        throw Exception('Failed to create project: ${response.body}');
+      }
+    } catch (e) {
+      print('Error creating project: $e');
     }
-  } catch (e) {
-    print('Error creating project: $e');
   }
-}
-
 
   // Update an existing project
   Future<void> _updateProject(Project project) async {
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:3000/projects/${project.id}'),
+        Uri.parse('https://localhost:3000/projects/${project.id}'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(project.toJson()),
       );
@@ -294,7 +294,7 @@ Future<void> _createProject(Project project) async {
   Future<void> _deleteProject(int projectId) async {
     try {
       final response = await http.delete(
-        Uri.parse('http://localhost:3000/projects/$projectId'),
+        Uri.parse('https://localhost:3000/projects/$projectId'),
       );
 
       if (response.statusCode == 200) {
@@ -315,7 +315,6 @@ Future<void> _createProject(Project project) async {
       appBar: AppBar(
         title: Text('Projects'),
         automaticallyImplyLeading: false, // Removes the back button
-
       ),
       body: Column(
         children: [

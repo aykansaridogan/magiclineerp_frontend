@@ -120,7 +120,7 @@ class _GirisCikisState extends State<GirisCikis> {
   Future<http.Response?> _saveGirisToBackend(DateTime now) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/saveGiris'),
+        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/saveGiris'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'formattedDate': _formattedDate,
@@ -138,7 +138,7 @@ class _GirisCikisState extends State<GirisCikis> {
   Future<http.Response?> _saveCikisToBackend(DateTime now) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/saveCikis'),
+        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/saveCikis'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'formattedDate': _formattedDate,
@@ -168,7 +168,7 @@ class _GirisCikisState extends State<GirisCikis> {
 
     try {
       // Make the API request to fetch attendance data
-      final response = await http.get(Uri.parse('http://localhost:3000/getAttendance/$_formattedDate'));
+      final response = await http.get(Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/getAttendance/$_formattedDate'));
 
       if (response.statusCode == 200) {
         // Parse the JSON data from the response

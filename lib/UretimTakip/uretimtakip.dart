@@ -25,7 +25,7 @@ class _ProductionTrackingWidgetState extends State<ProductionTrackingWidget> {
 
   Future<void> _fetchLocations() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/locations'));
+      final response = await http.get(Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/locations'));
 
       if (response.statusCode == 200) {
         final List<dynamic> locationData = jsonDecode(response.body);
@@ -45,7 +45,7 @@ class _ProductionTrackingWidgetState extends State<ProductionTrackingWidget> {
   Future<void> _addLocation(String name) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/locations'),
+        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/locations'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -70,7 +70,7 @@ class _ProductionTrackingWidgetState extends State<ProductionTrackingWidget> {
   Future<void> _updateStage(int stageId, bool isCompleted) async {
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:3000/stages/$stageId'),
+        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/stages/$stageId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

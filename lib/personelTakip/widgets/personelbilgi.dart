@@ -26,7 +26,7 @@ class _PersonelInfoWidgetState extends State<PersonelInfoWidget> {
   Future<void> _fetchPersonelNames() async {
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:3000/personelnames'),
+        Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/personelnames'),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
@@ -53,7 +53,7 @@ class _PersonelInfoWidgetState extends State<PersonelInfoWidget> {
     final String name = personelListesi[index];
     try {
       final response = await http.delete(
-        Uri.parse('http://localhost:3000/removepersonel/$name'),
+        Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/removepersonel/$name'),
       );
       if (response.statusCode == 200) {
         setState(() {

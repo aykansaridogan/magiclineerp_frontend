@@ -19,7 +19,7 @@ class _UpcomingBirthdaysState extends State<UpcomingBirthdays> {
 
   Future<void> fetchUpcomingBirthdays() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/upcoming-birthdays'));
+      final response = await http.get(Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/upcoming-birthdays'));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {

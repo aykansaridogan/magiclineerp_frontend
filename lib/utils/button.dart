@@ -5,6 +5,8 @@ import 'package:deneme/UretimTakip/uretimtakip.dart';
 import 'package:deneme/UrunTakip/uruntakip.dart';
 import 'package:deneme/authentication/hesapislem.dart';
 import 'package:deneme/personelTakip/widgets/personeltakip.dart';
+import 'package:deneme/ArgeTakip/widget/arge.dart';
+import 'package:deneme/IstasyonTakip/istasyonTakip.dart';
 import 'package:flutter/material.dart';
 
 
