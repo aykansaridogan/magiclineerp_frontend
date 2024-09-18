@@ -1,4 +1,4 @@
-import 'package:deneme/UrunTakip/urunmodal.dart';
+import 'package:MagiclineERP/UrunTakip/urunmodal.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,7 +22,7 @@ class _ProductTrackerState extends State<ProductTracker> {
 
   Future<void> _fetchProducts() async {
     try {
-      final response = await http.get(Uri.parse('https://2adc-159-146-53-63.ngrok-free.app/products')); // Update IP address as needed
+      final response = await http.get(Uri.parse('http://localhost:3000/products')); // Update IP address as needed
       if (response.statusCode == 200) {
         print('Response body: ${response.body}');
         // Decode JSON response
@@ -47,7 +47,7 @@ class _ProductTrackerState extends State<ProductTracker> {
   void _addProduct(Product product) async {
     try {
       final response = await http.post(
-        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/addProduct'), // Update IP address as needed
+        Uri.parse('http://localhost:3000/addProduct'), // Update IP address as needed
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -73,7 +73,7 @@ class _ProductTrackerState extends State<ProductTracker> {
   void _deleteProduct(String malzemekod) async {
   try {
     final response = await http.delete(
-      Uri.parse('https://2adc-159-146-53-63.ngrok-free.app/deleteProduct/$malzemekod'),
+      Uri.parse('http://localhost:3000/deleteProduct/$malzemekod'),
     );
 
     print('Delete response status: ${response.statusCode}');
@@ -92,7 +92,7 @@ class _ProductTrackerState extends State<ProductTracker> {
 void _editProduct(Product product) async {
   try {
     final response = await http.put(
-      Uri.parse('https://2adc-159-146-53-63.ngrok-free.app/updateProduct/${product.malzemekod}'),
+      Uri.parse('http://localhost:3000/updateProduct/${product.malzemekod}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

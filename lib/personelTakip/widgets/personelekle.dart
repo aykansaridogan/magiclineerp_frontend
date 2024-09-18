@@ -65,7 +65,7 @@ class _PersonelEklePopupState extends State<PersonelEklePopup> {
     }
 
     final response = await http.post(
-      Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/addpersonel'),
+      Uri.parse('http://localhost:3000/addpersonel'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': nameController.text,

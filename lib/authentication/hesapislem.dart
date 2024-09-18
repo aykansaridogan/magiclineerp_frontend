@@ -50,7 +50,7 @@ class _HesapIslemScreenState extends State<HesapIslemScreen> {
   }
 
   void _saveChanges() async {
-  final uri = Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/changepassword');
+  final uri = Uri.parse('http://localhost:3000/changepassword');
   final response = await http.post(
     uri,
     body: {

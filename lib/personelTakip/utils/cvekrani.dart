@@ -1,4 +1,4 @@
-import 'package:deneme/personelTakip/widgets/sonuclar.dart';
+import 'package:MagiclineERP/personelTakip/widgets/sonuclar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -28,7 +28,7 @@ class _CVListScreenState extends State<CVListScreen> {
   Future<void> fetchFiles() async {
     try {
       final response = await http.get(
-        Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/files?folderPath=$currentFolderPath'),
+        Uri.parse('http://localhost:3000/files?folderPath=$currentFolderPath'),
       );
 
       if (response.statusCode == 200) {
@@ -56,7 +56,7 @@ class _CVListScreenState extends State<CVListScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/pdf?filePath=$filePath'),
+        Uri.parse('http://localhost:3000/pdf?filePath=$filePath'),
       );
 
       if (response.statusCode == 200) {
@@ -88,7 +88,7 @@ class _CVListScreenState extends State<CVListScreen> {
   Future<void> deleteFile(String filePath, int index) async {
     try {
       final response = await http.delete(
-        Uri.parse('https://2adc-159-146-53-63.ngrok-free.app/files'),
+        Uri.parse('http://localhost:3000/files'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'filePath': filePath}),
       );

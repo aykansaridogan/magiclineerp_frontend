@@ -1,13 +1,12 @@
-import 'dart:convert';
-import 'package:deneme/authentication/login.dart';
+import 'package:MagiclineERP/authentication/login.dart';
+import 'package:MagiclineERP/chatscreen.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class HomeAppBar extends StatelessWidget {
-  final bool bildirim;
+  final bool hasNewMessage;
   final String username;
 
-  HomeAppBar({Key? key, required this.username, this.bildirim = false}) : super(key: key);
+  HomeAppBar({Key? key, required this.username, this.hasNewMessage = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +30,17 @@ class HomeAppBar extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () {
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const NotificationsPage(),
-                      //   ));
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChatScreen(username: username,)),
+                      );
                     },
                     icon: Icon(
-                      bildirim ? Icons.message : Icons.message_outlined,
-                      color: bildirim ? Colors.blue : Colors.black,
+                      hasNewMessage ? Icons.chat : Icons.chat_bubble_outline,
+                      color: hasNewMessage ? Colors.blue : Colors.black,
                     ),
                   ),
-                  if (bildirim)
+                  if (hasNewMessage)
                     Positioned(
                       right: 0,
                       top: 0,

@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:deneme/homeappbar.dart';
-import 'package:deneme/utils/button.dart';
+import 'package:MagiclineERP/homeappbar.dart';
+import 'package:MagiclineERP/utils/button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Tarih formatlamak için
 import 'package:http/http.dart' as http;
@@ -63,7 +63,7 @@ class HomePageScreen extends StatelessWidget {
 
   // Backend API'den bu ay doğan kişileri çekmek için bir fonksiyon
   Future<List<Map<String, dynamic>>> fetchPeopleBornThisMonth() async {
-    final response = await http.get(Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/upcoming-birthdays'));
+    final response = await http.get(Uri.parse('http://localhost:3000/upcoming-birthdays'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(response.body);

@@ -27,7 +27,7 @@ class _SonuclarPDFEkraniState extends State<SonuclarPDFEkrani> {
 
   Future<Uint8List> fetchPdf(String filePath) async {
     final encodedFilePath = Uri.encodeComponent(filePath);
-    final url = ' https://2a07-159-146-53-63.ngrok-free.app/pdf?filePath=$encodedFilePath'; // IP adresinizi burada güncelleyin
+    final url = 'http://localhost:3000/pdf?filePath=$encodedFilePath'; // IP adresinizi burada güncelleyin
 
     try {
       final response = await http.get(Uri.parse(url));

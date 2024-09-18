@@ -1,4 +1,5 @@
-import 'package:deneme/authentication/login.dart';
+import 'package:MagiclineERP/authentication/login.dart';
+import 'package:MagiclineERP/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

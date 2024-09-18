@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class BackendService {
-  static const String baseUrl = 'http://2a07-159-146-53-63.ngrok-free.app';
+  static const String baseUrl = 'http://localhost:3000';
 
   static Future<void> saveGiris(String formattedDate, String kullaniciadi, String girisSaati) async {
     final response = await http.post(

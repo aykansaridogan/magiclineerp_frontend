@@ -1,5 +1,5 @@
-import 'package:deneme/personelTakip/modal/project.dart';
-import 'package:deneme/personelTakip/modal/task.dart';
+import 'package:MagiclineERP/personelTakip/modal/project.dart';
+import 'package:MagiclineERP/personelTakip/modal/task.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -26,7 +26,7 @@ class _ProjectsState extends State<Projects> {
   // Fetch projects from the backend
   Future<void> _fetchProjects() async {
     try {
-      final response = await http.get(Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/projects'));
+      final response = await http.get(Uri.parse('http://localhost:3000/projects'));
 
       if (response.statusCode == 200) {
         final List<dynamic> projectList = json.decode(response.body);
@@ -238,7 +238,7 @@ class _ProjectsState extends State<Projects> {
   Future<void> _createProject(Project project) async {
     try {
       final response = await http.post(
-        Uri.parse('https://2a07-159-146-53-63.ngrok-free.app/projects'),
+        Uri.parse('http://localhost:3000/projects'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'name': project.name,
@@ -269,7 +269,7 @@ class _ProjectsState extends State<Projects> {
   Future<void> _updateProject(Project project) async {
     try {
       final response = await http.put(
-        Uri.parse('https://localhost:3000/projects/${project.id}'),
+        Uri.parse('http://localhost:3000/projects/${project.id}'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(project.toJson()),
       );
@@ -294,7 +294,7 @@ class _ProjectsState extends State<Projects> {
   Future<void> _deleteProject(int projectId) async {
     try {
       final response = await http.delete(
-        Uri.parse('https://localhost:3000/projects/$projectId'),
+        Uri.parse('http://localhost:3000/projects/$projectId'),
       );
 
       if (response.statusCode == 200) {

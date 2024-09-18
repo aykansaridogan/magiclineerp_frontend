@@ -1,5 +1,5 @@
-import 'package:deneme/personelTakip/widgets/personeldetay.dart';
-import 'package:deneme/personelTakip/widgets/personelekle.dart';
+import 'package:MagiclineERP/personelTakip/widgets/personeldetay.dart';
+import 'package:MagiclineERP/personelTakip/widgets/personelekle.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -26,7 +26,7 @@ class _PersonelInfoWidgetState extends State<PersonelInfoWidget> {
   Future<void> _fetchPersonelNames() async {
     try {
       final response = await http.get(
-        Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/personelnames'),
+        Uri.parse('http://localhost:3000/personelnames'),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
@@ -53,7 +53,7 @@ class _PersonelInfoWidgetState extends State<PersonelInfoWidget> {
     final String name = personelListesi[index];
     try {
       final response = await http.delete(
-        Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/removepersonel/$name'),
+        Uri.parse('http://localhost:3000/removepersonel/$name'),
       );
       if (response.statusCode == 200) {
         setState(() {

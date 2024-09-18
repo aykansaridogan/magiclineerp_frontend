@@ -26,7 +26,7 @@ class _TechnicalSupportWidgetState extends State<TechnicalSupportWidget> {
     try {
       // Login request
       final loginResponse = await http.post(
-        Uri.parse('https://app.tridenstechnology.com/auth/realms/magicline_sarj/protocol/openid-connect/token'),
+        Uri.parse('http://app.tridenstechnology.com/auth/realms/magicline_sarj/protocol/openid-connect/token'),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: {
           'grant_type': 'password',
@@ -42,7 +42,7 @@ class _TechnicalSupportWidgetState extends State<TechnicalSupportWidget> {
 
         // Fetch infrastructure data
         final infrastructureResponse = await http.get(
-          Uri.parse('https://magicline-sarj.tridenstechnology.com/api/v1/roaming-platforms/magicline-sarj/stations?page=1&count=1000&list=https://magicline-sarj.tridenstechnology.com/ev-charge/stations/list'),
+          Uri.parse('http://magicline-sarj.tridenstechnology.com/api/v1/roaming-platforms/magicline-sarj/stations?page=1&count=1000&list=https://magicline-sarj.tridenstechnology.com/ev-charge/stations/list'),
           headers: {
             'Authorization': 'Bearer $authToken',
           },

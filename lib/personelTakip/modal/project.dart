@@ -1,4 +1,4 @@
-import 'package:deneme/personelTakip/modal/task.dart';
+import 'package:MagiclineERP/personelTakip/modal/task.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 

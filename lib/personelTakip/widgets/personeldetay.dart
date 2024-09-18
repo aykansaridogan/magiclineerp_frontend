@@ -153,7 +153,7 @@ class _PersonDetailsWidgetState extends State<PersonDetailsWidget> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://2a07-159-146-53-63.ngrok-free.app/updatepersondetails'),
+        Uri.parse('http://localhost:3000/updatepersondetails'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'name': _nameController.text,
