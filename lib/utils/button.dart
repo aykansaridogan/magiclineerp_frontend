@@ -1,58 +1,52 @@
-import 'package:MagiclineERP/ArgeTakip/widget/arge.dart';
-import 'package:MagiclineERP/IstasyonTakip/istasyonTakip.dart';
-import 'package:MagiclineERP/TeknikTakip/teknikTakip.dart';
-import 'package:MagiclineERP/UretimTakip/uretimtakip.dart';
-import 'package:MagiclineERP/UrunTakip/uruntakip.dart';
-import 'package:MagiclineERP/authentication/hesapislem.dart';
-import 'package:MagiclineERP/personelTakip/widgets/personeltakip.dart';
-import 'package:MagiclineERP/ArgeTakip/widget/arge.dart';
-import 'package:MagiclineERP/IstasyonTakip/istasyonTakip.dart';
+import 'package:MagicERP/ArgeTakip/widget/arge.dart';
+import 'package:MagicERP/IstasyonTakip/istasyonTakip.dart';
+import 'package:MagicERP/TeknikTakip/teknikTakip.dart';
+import 'package:MagicERP/UretimTakip/uretimtakip.dart';
+import 'package:MagicERP/UrunTakip/uruntakip.dart';
+import 'package:MagicERP/authentication/hesapislem.dart';
+import 'package:MagicERP/personelTakip/widgets/personeltakip.dart';
+import 'package:MagicERP/ArgeTakip/widget/arge.dart';
+import 'package:MagicERP/IstasyonTakip/istasyonTakip.dart' as dsad;
 import 'package:flutter/material.dart';
-
 
 class CardBaloncugu extends StatelessWidget {
   final String imageUrl;
   final String description;
   final String username;
 
-  // Sayfaların adlarını saklamak için bir dizi oluştur
-  final List<String> pageNames = ['PersonelTracker', 'UrunTracker',];
-
   CardBaloncugu({required this.imageUrl, required this.description, required this.username});
-  
- 
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, top: 10),
+      padding: const EdgeInsets.only(left: 1.0, top: 4), // Padding'i iyice küçülttük
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(6.0), // Köşe yarıçapını daha da küçülttük
         ),
-        elevation: 3,
+        elevation: 1, // Minimal gölge verdik
         child: InkWell(
           onTap: () {
-            // İlgili sayfaya gitmek için index'i kullan
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) {
                 if (description == 'Personel') {
-                  return PersonelTracker(username: username,);
+                  return PersonelTracker(username: username);
                 } else if (description == 'Ürün') {
                   return ProductTracker();
-                }  else if (description == 'Üretim'){
-                  return ProductionTrackingWidget(username: username,);
-                } else if (description == 'İstasyonlar'){
-                  return StationWidget();
-                } else if (description == 'Teknik Servis'){
+                } else if (description == 'Üretim') {
+                  return ProductionTrackingWidget(username: username);
+                } else if (description == 'İstasyonlar') {
+                  return EnergyChart();
+                } else if (description == 'Teknik Servis') {
                   return TechnicalSupportWidget();
-                } else if (description == 'Arge'){
+                } else if (description == 'Arge') {
                   return ArgeTrack();
                 } else if (description == 'Hesap') {
                   return HesapIslemScreen();
                 }
-                // Diğer sayfalar için gerektiği kadar else if ekleyebilirsin
-                return Container(); // Varsayılan olarak bir boş sayfa döndür
+                return Container();
               },
             ));
           },
@@ -61,24 +55,24 @@ class CardBaloncugu extends StatelessWidget {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
+                  topLeft: Radius.circular(6.0),
+                  topRight: Radius.circular(6.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(top: 4.0), // Daha da küçük üst padding
                   child: Image.network(
                     imageUrl,
-                    width: 100,
-                    height: 100,
+                    width: screenWidth * 0.12, // Resmi iyice küçülttük
+                    height: screenWidth * 0.12, // Yüksekliği de küçüldü
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(screenWidth * 0.015), // Küçük padding
                 child: Text(
                   description,
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: screenWidth * 0.025), // Daha küçük font boyutu
                   textAlign: TextAlign.center,
                 ),
               ),

@@ -1,91 +1,141 @@
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class Station {
-  final int sirano;
-  String sozlesmeno;
-  String sayacno;
-  String urunsirano;
-  String uruntip;
-  String yer;
-  String soketno;
-  String IMEIno;
-  String gsmno;
-
-  Station({
-    required this.sirano,
-    required this.sozlesmeno,
-    required this.sayacno,
-    required this.urunsirano,
-    required this.uruntip,
-    required this.yer,
-    required this.soketno,
-    required this.IMEIno,
-    required this.gsmno,
-  });
-
-  factory Station.fromJson(Map<String, dynamic> json) {
-    final cleanedJson = json.map((key, value) {
-      final cleanKey = key.replaceAll(RegExp(r'^="|"$'), '').trim();
-      final cleanValue = value.replaceAll(RegExp(r'^="|"$'), '').trim();
-      return MapEntry(cleanKey, cleanValue);
-    });
-
-    return Station(
-      sirano: int.tryParse(cleanedJson['SIRA NO'] ?? '0') ?? 0,
-      sozlesmeno: cleanedJson['SÖZLEŞME NO'] ?? '',
-      sayacno: cleanedJson['Sayaç No'] ?? '',
-      urunsirano: cleanedJson['ÜRÜN SIRA NO'] ?? '',
-      uruntip: cleanedJson['ÜRÜN TİP'] ?? '',
-      yer: cleanedJson['BULUNDUĞU YER'] ?? '',
-      soketno: cleanedJson['SOKET NO'] ?? '',
-      IMEIno: cleanedJson['IMEI NO'] ?? '',
-      gsmno: cleanedJson['GSM NO'] ?? '',
-    );
-  }
-}
-
-class StationWidget extends StatefulWidget {
+class EnergyChart extends StatefulWidget {
   @override
-  _StationWidgetState createState() => _StationWidgetState();
+  _EnergyChartState createState() => _EnergyChartState();
 }
 
-class _StationWidgetState extends State<StationWidget> {
-  List<Station> products = [];
+class _EnergyChartState extends State<EnergyChart> {
+  late Future<List<EnergyData>> _energyDataFuture;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _energyDataFuture = fetchEnergyData();
   }
 
-  Future<void> _loadData() async {
-    final jsonString = await rootBundle.loadString('assets/istasyonlar.json');
-    final List<dynamic> jsonResponse = json.decode(jsonString);
-    setState(() {
-      products = jsonResponse.map((data) => Station.fromJson(data)).toList();
-    });
+  Future<List<EnergyData>> fetchEnergyData() async {
+    final response = await http.get(Uri.parse('https://magiclinesarj.com/Admin/AdminDashboard/GetChartData'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      return data.map((item) => EnergyData.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load energy data');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('İstasyon Takip'),
+        title: Text('Aylık Enerji Tüketimi'),
       ),
-      body: products.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return ListTile(
-                  title: Text(product.sozlesmeno),
-                  subtitle: Text(product.sayacno),
-                );
-              },
+      body: FutureBuilder<List<EnergyData>>(
+        future: _energyDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          }
+
+          // Extract the data
+          final List<EnergyData> data = snapshot.data!;
+          final List<FlSpot> spots = data.map((e) => FlSpot(e.month.toDouble(), e.totalKwh)).toList();
+          final double minX = spots.map((e) => e.x).reduce((a, b) => a < b ? a : b);
+          final double maxX = spots.map((e) => e.x).reduce((a, b) => a > b ? a : b);
+          final double minY = spots.map((e) => e.y).reduce((a, b) => a < b ? a : b);
+          final double maxY = spots.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 750,
+              height: 500,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(show: true),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return SideTitleWidget(
+                            axisSide: meta.axisSide,
+                            child: Text(value.toStringAsFixed(0), style: TextStyle(fontSize: 14)),
+                          );
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          final month = value.toInt();
+                          return SideTitleWidget(
+                            axisSide: meta.axisSide,
+                            child: Text(_getMonthName(month), style: TextStyle(fontSize: 14)),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.black, width: 1),
+                  ),
+                  minX: minX - 1,
+                  maxX: maxX + 1,
+                  minY: minY - 0.1 * (maxY - minY),
+                  maxY: maxY + 0.1 * (maxY - minY),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spots,
+                      isCurved: true,
+                      color: Colors.blue,
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      belowBarData: BarAreaData(show: true, color: Colors.blue.withOpacity(0.3)),
+                      dotData: FlDotData(show: false),
+                    ),
+                  ],
+                ),
+              ),
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _getMonthName(int month) {
+    List<String> months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return months[month];
+  }
+}
+
+class EnergyData {
+  final int year;
+  final int month;
+  final double totalKwh;
+
+  EnergyData({required this.year, required this.month, required this.totalKwh});
+
+  factory EnergyData.fromJson(Map<String, dynamic> json) {
+    return EnergyData(
+      year: json['year'] ?? 0,
+      month: json['month'] ?? 1,
+      totalKwh: (json['totalKwh'] ?? 0.0).toDouble(),
     );
   }
 }

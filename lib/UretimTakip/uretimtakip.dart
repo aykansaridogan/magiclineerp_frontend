@@ -1,4 +1,4 @@
-import 'package:MagiclineERP/UretimTakip/modals/location.dart';
+import 'package:MagicERP/UretimTakip/modals/location.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -25,7 +25,7 @@ class _ProductionTrackingWidgetState extends State<ProductionTrackingWidget> {
 
   Future<void> _fetchLocations() async {
     try {
-      final response = await http.get(Uri.parse('https://localhost:3000/locations'));
+      final response = await http.get(Uri.parse('http://localhost:3000/locations'));
 
       if (response.statusCode == 200) {
         final List<dynamic> locationData = jsonDecode(response.body);
@@ -45,7 +45,7 @@ class _ProductionTrackingWidgetState extends State<ProductionTrackingWidget> {
   Future<void> _addLocation(String name) async {
     try {
       final response = await http.post(
-        Uri.parse('https://localhost:3000/locations'),
+        Uri.parse('http://localhost:3000/locations'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -70,7 +70,7 @@ class _ProductionTrackingWidgetState extends State<ProductionTrackingWidget> {
   Future<void> _updateStage(int stageId, bool isCompleted) async {
     try {
       final response = await http.put(
-        Uri.parse('https://localhost:3000/stages/$stageId'),
+        Uri.parse('http://localhost:3000/stages/$stageId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

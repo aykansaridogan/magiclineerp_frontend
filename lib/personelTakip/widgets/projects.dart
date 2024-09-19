@@ -1,5 +1,5 @@
-import 'package:MagiclineERP/personelTakip/modal/project.dart';
-import 'package:MagiclineERP/personelTakip/modal/task.dart';
+import 'package:MagicERP/personelTakip/modal/project.dart';
+import 'package:MagicERP/personelTakip/modal/task.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;

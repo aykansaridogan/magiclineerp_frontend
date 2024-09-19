@@ -1,4 +1,4 @@
-import 'package:MagiclineERP/UretimTakip/modals/stages.dart';
+import 'package:MagicERP/UretimTakip/modals/stages.dart';
 import 'package:flutter/material.dart';
 
 class Location {

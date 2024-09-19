@@ -5,7 +5,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:MagiclineERP/constants/constants.dart' as constants;
+import 'package:MagicERP/constants/constants.dart' as constants;
 
 class Izinler extends StatefulWidget {
   @override

@@ -1,5 +1,5 @@
-import 'package:MagiclineERP/personelTakip/widgets/personeldetay.dart';
-import 'package:MagiclineERP/personelTakip/widgets/personelekle.dart';
+import 'package:MagicERP/personelTakip/widgets/personeldetay.dart';
+import 'package:MagicERP/personelTakip/widgets/personelekle.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,11 +29,13 @@ class _PersonelInfoWidgetState extends State<PersonelInfoWidget> {
         Uri.parse('http://localhost:3000/personelnames'),
       );
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          personelListesi = List<String>.from(data);
-          selectedPersonel = List<bool>.filled(personelListesi.length, false);
-        });
+        final List<dynamic>? data = jsonDecode(response.body);
+        if (data != null) {
+          setState(() {
+            personelListesi = List<String>.from(data);
+            selectedPersonel = List<bool>.filled(personelListesi.length, false);
+          });
+        }
       } else {
         _showMessage('Error fetching personnel names: ${response.statusCode}');
       }
@@ -79,68 +81,123 @@ class _PersonelInfoWidgetState extends State<PersonelInfoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: personelListesi.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(personelListesi[index]),
-                // Only allow navigation to details for specific users
-                onTap: canModify
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PersonDetailsWidget(
-                              personName: personelListesi[index],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Personel Bilgileri'),
+        backgroundColor: Colors.teal,
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isMobile = constraints.maxWidth < 600;
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: isMobile
+                      ? ListView.builder(
+                          itemCount: personelListesi.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(personelListesi[index]),
+                              onTap: canModify
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PersonDetailsWidget(
+                                            personName: personelListesi[index],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                              trailing: canModify
+                                  ? Checkbox(
+                                      value: selectedPersonel[index],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedPersonel[index] = value ?? false;
+                                        });
+                                      },
+                                    )
+                                  : null,
+                            );
+                          },
+                        )
+                      : Row(
+                          children: [
+                            // Sol panel: Kullanıcı listesi
+                            Expanded(
+                              flex: 2,
+                              child: ListView.builder(
+                                itemCount: personelListesi.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(personelListesi[index]),
+                                    onTap: canModify
+                                        ? () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PersonDetailsWidget(
+                                                  personName: personelListesi[index],
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        : null,
+                                    trailing: canModify
+                                        ? Checkbox(
+                                            value: selectedPersonel[index],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedPersonel[index] = value ?? false;
+                                              });
+                                            },
+                                          )
+                                        : null,
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    : null,
-                // Show the checkbox only for specified users
-                trailing: canModify
-                    ? Checkbox(
-                        value: selectedPersonel[index],
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPersonel[index] = value ?? false;
-                          });
-                        },
-                      )
-                    : null, // Hide checkbox for other users
-              );
-            },
-          ),
-        ),
-        if (canModify) ...[
-          // Show buttons only for specified users
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  final result = await showDialog<String>(
-                    context: context,
-                    builder: (context) => PersonelEklePopup(),
-                  );
-                  if (result != null && result.isNotEmpty) {
-                    _addPersonelToList(result);
-                  }
-                },
-                child: Text('Personel Ekle'),
-              ),
-              ElevatedButton(
-                onPressed: _confirmDelete,
-                child: Text('Seçilenleri Sil'),
-              ),
-            ],
-          ),
-        ],
-      ],
+                            // Sağ panel: Seçim ve butonlar
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 20),
+                                  if (canModify) ...[
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        final result = await showDialog<String>(
+                                          context: context,
+                                          builder: (context) => PersonelEklePopup(),
+                                        );
+                                        if (result != null && result.isNotEmpty) {
+                                          _addPersonelToList(result);
+                                        }
+                                      },
+                                      child: Text('Personel Ekle'),
+                                    ),
+                                    SizedBox(height: 10),
+                                    ElevatedButton(
+                                      onPressed: _confirmDelete,
+                                      child: Text('Seçilenleri Sil'),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 

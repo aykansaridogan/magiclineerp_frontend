@@ -1,5 +1,5 @@
-name: MagiclineERP
-description: "Magicline ERP"
+name: MagicERP
+description: "Magicline_ERP"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.3.2
   easy_pdf_viewer: ^1.0.8
   url_launcher: ^6.3.0
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:

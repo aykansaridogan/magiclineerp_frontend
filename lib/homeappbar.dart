@@ -1,5 +1,5 @@
-import 'package:MagiclineERP/authentication/login.dart';
-import 'package:MagiclineERP/chatscreen.dart';
+import 'package:MagicERP/authentication/login.dart';
+import 'package:MagicERP/chatscreen.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -16,6 +16,7 @@ class HomeAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+           
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(

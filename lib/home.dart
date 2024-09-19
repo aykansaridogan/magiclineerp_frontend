@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:MagiclineERP/homeappbar.dart';
-import 'package:MagiclineERP/utils/button.dart';
+import 'package:MagicERP/homeappbar.dart';
+import 'package:MagicERP/utils/button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Tarih formatlamak için
 import 'package:http/http.dart' as http;
@@ -47,7 +47,6 @@ class HomePageScreen extends StatelessWidget {
       
       // Diğer kart baloncuklarını da buraya ekleyebilirsiniz
     ];
-
   HomePageScreen({Key? key, required this.username}) : super(key: key);
 
   // Tarih formatını parse eden bir fonksiyon
@@ -68,8 +67,7 @@ class HomePageScreen extends StatelessWidget {
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(response.body);
       DateTime now = DateTime.now();
-      int currentMonth = now.month; // Bu satırı kontrol edin
-      int currentYear = now.year;
+      int currentMonth = now.month;
 
       // Bu ay doğan kişileri filtreleyelim
       List<Map<String, dynamic>> peopleBornThisMonth = jsonResponse.where((person) {
@@ -93,6 +91,8 @@ class HomePageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     // Kart baloncuklarının dizilimini oluşturalım
     List<Widget> cardWidgets = cardInfoList.map((cardInfo) {
       return CardBaloncugu(
@@ -102,16 +102,19 @@ class HomePageScreen extends StatelessWidget {
       );
     }).toList();
 
-    // Kart baloncuklarını sırayla 4'lü gruplara ayıralım
+    // Ekran genişliğine göre kartları 4'lü veya daha küçük gruplara ayır
+    int cardsPerRow = screenWidth > 800 ? 4 : screenWidth > 600 ? 3 : 2;
+
+    // Kart baloncuklarını sırayla gruplara ayıralım
     List<Widget> rows = [];
-    for (int i = 0; i < cardWidgets.length; i += 4) {
+    for (int i = 0; i < cardWidgets.length; i += cardsPerRow) {
       List<Widget> rowChildren = [];
-      for (int j = i; j < i + 4 && j < cardWidgets.length; j++) {
-        rowChildren.add(cardWidgets[j]);
+      for (int j = i; j < i + cardsPerRow && j < cardWidgets.length; j++) {
+        rowChildren.add(Expanded(child: cardWidgets[j]));
       }
       rows.add(
         Padding(
-          padding: const EdgeInsets.only(left: 40, right: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: rowChildren,
@@ -125,86 +128,103 @@ class HomePageScreen extends StatelessWidget {
         children: [
           HomeAppBar(username: username),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Kart baloncukları bölümü
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      children: [
-                        // Oluşturduğumuz sıralı 4'lü grupları ekleyelim
-                        ...rows,
-                      ],
-                    ),
-                  ),
-                  
-                  // Ay Doğanlar bölümünü sağ tarafa ekleyelim
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
+            child: SingleChildScrollView( // Ana içeriği kaydırılabilir hale getirdik
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: screenWidth > 1000
+                    ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Bu Ay Doğanlar',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          SizedBox(height: 10),
+                          // Kart baloncukları bölümü
                           Expanded(
-                            child: FutureBuilder<List<Map<String, dynamic>>>(
-                              future: fetchPeopleBornThisMonth(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Center(child: CircularProgressIndicator());
-                                } else if (snapshot.hasError) {
-                                  return Text('Veriler yüklenirken hata oluştu: ${snapshot.error}');
-                                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                  return Text('Bu ay doğan kimse yok.');
-                                } else {
-                                  final peopleBornThisMonth = snapshot.data!;
-                                  return SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        for (var person in peopleBornThisMonth)
-                                          Container(
-                                            margin: EdgeInsets.only(bottom: 10),
-                                            padding: EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(person['name']!, style: TextStyle(fontWeight: FontWeight.bold)),
-                                                // Doğum tarihini istenen formatta gösterelim
-                                                Text(parseDate(person['birthday']!) ?? 'Geçersiz tarih formatı'),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
+                            flex: 3,
+                            child: Column(
+                              children: [
+                                ...rows,
+                              ],
                             ),
                           ),
+                          // Ay Doğanlar bölümü sağda görünür
+                          Expanded(
+                            flex: 1,
+                            child: birthdaySection(context),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          // Mobil ve küçük ekranlarda üst üste göster
+                          Column(
+                            children: [
+                              ...rows,
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          // Ay Doğanlar bölümü aşağıda görünür
+                          birthdaySection(context),
                         ],
                       ),
-                    ),
-                  ),
-                ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Ay Doğanlar bölümü
+  Widget birthdaySection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Bu Ay Doğanlar',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          SizedBox(height: 10),
+          FutureBuilder<List<Map<String, dynamic>>>(
+            future: fetchPeopleBornThisMonth(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text('Veriler yüklenirken hata oluştu: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('Bu ay doğan kimse yok.');
+              } else {
+                final peopleBornThisMonth = snapshot.data!;
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      for (var person in peopleBornThisMonth)
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade100,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(person['name']!, style: TextStyle(fontWeight: FontWeight.bold)),
+                              // Doğum tarihini istenen formatta gösterelim
+                              Text(parseDate(person['birthday']!) ?? 'Geçersiz tarih formatı'),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

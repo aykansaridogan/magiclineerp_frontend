@@ -1,9 +1,9 @@
-import 'package:MagiclineERP/personelTakip/utils/cvekrani.dart';
-import 'package:MagiclineERP/personelTakip/utils/giriscikis.dart';
-import 'package:MagiclineERP/personelTakip/utils/yaklasandogumgunu.dart';
-import 'package:MagiclineERP/personelTakip/widgets/izin.dart';
-import 'package:MagiclineERP/personelTakip/widgets/personelbilgi.dart';
-import 'package:MagiclineERP/personelTakip/widgets/projects.dart';
+import 'package:MagicERP/personelTakip/utils/cvekrani.dart';
+import 'package:MagicERP/personelTakip/utils/giriscikis.dart';
+import 'package:MagicERP/personelTakip/utils/yaklasandogumgunu.dart';
+import 'package:MagicERP/personelTakip/widgets/izin.dart';
+import 'package:MagicERP/personelTakip/widgets/personelbilgi.dart';
+import 'package:MagicERP/personelTakip/widgets/projects.dart';
 import 'package:flutter/material.dart';
 
 
